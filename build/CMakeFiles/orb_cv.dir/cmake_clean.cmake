@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o"
+  "CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o"
+  "CMakeFiles/orb_cv.dir/src/orb_self.cpp.o"
   "orb_cv"
   "orb_cv.pdb"
 )

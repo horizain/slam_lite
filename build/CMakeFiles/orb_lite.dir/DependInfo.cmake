@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/horizain/slam_lite/src/FASTDetector.cpp" "/home/horizain/slam_lite/build/CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o"
-  "/home/horizain/slam_lite/src/orb_self.cpp" "/home/horizain/slam_lite/build/CMakeFiles/orb_cv.dir/src/orb_self.cpp.o"
+  "/home/horizain/slam_lite/src/FASTDetector.cpp" "/home/horizain/slam_lite/build/CMakeFiles/orb_lite.dir/src/FASTDetector.cpp.o"
+  "/home/horizain/slam_lite/src/orb_self.cpp" "/home/horizain/slam_lite/build/CMakeFiles/orb_lite.dir/src/orb_self.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

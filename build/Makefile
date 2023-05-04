@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/horizain/SLAM-Lite
+CMAKE_SOURCE_DIR = /home/horizain/slam_lite
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/horizain/SLAM-Lite/build
+CMAKE_BINARY_DIR = /home/horizain/slam_lite/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/horizain/SLAM-Lite/build/CMakeFiles /home/horizain/SLAM-Lite/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/horizain/slam_lite/build/CMakeFiles /home/horizain/slam_lite/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/horizain/SLAM-Lite/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/horizain/slam_lite/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,44 +111,71 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named orb_cv
+# Target rules for targets named orb_lite
 
 # Build rule for target.
-orb_cv: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 orb_cv
-.PHONY : orb_cv
+orb_lite: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 orb_lite
+.PHONY : orb_lite
 
 # fast build rule for target.
-orb_cv/fast:
-	$(MAKE) -f CMakeFiles/orb_cv.dir/build.make CMakeFiles/orb_cv.dir/build
-.PHONY : orb_cv/fast
+orb_lite/fast:
+	$(MAKE) -f CMakeFiles/orb_lite.dir/build.make CMakeFiles/orb_lite.dir/build
+.PHONY : orb_lite/fast
 
-src/orb_cv.o: src/orb_cv.cpp.o
+src/FASTDetector.o: src/FASTDetector.cpp.o
 
-.PHONY : src/orb_cv.o
+.PHONY : src/FASTDetector.o
 
 # target to build an object file
-src/orb_cv.cpp.o:
-	$(MAKE) -f CMakeFiles/orb_cv.dir/build.make CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o
-.PHONY : src/orb_cv.cpp.o
+src/FASTDetector.cpp.o:
+	$(MAKE) -f CMakeFiles/orb_lite.dir/build.make CMakeFiles/orb_lite.dir/src/FASTDetector.cpp.o
+.PHONY : src/FASTDetector.cpp.o
 
-src/orb_cv.i: src/orb_cv.cpp.i
+src/FASTDetector.i: src/FASTDetector.cpp.i
 
-.PHONY : src/orb_cv.i
+.PHONY : src/FASTDetector.i
 
 # target to preprocess a source file
-src/orb_cv.cpp.i:
-	$(MAKE) -f CMakeFiles/orb_cv.dir/build.make CMakeFiles/orb_cv.dir/src/orb_cv.cpp.i
-.PHONY : src/orb_cv.cpp.i
+src/FASTDetector.cpp.i:
+	$(MAKE) -f CMakeFiles/orb_lite.dir/build.make CMakeFiles/orb_lite.dir/src/FASTDetector.cpp.i
+.PHONY : src/FASTDetector.cpp.i
 
-src/orb_cv.s: src/orb_cv.cpp.s
+src/FASTDetector.s: src/FASTDetector.cpp.s
 
-.PHONY : src/orb_cv.s
+.PHONY : src/FASTDetector.s
 
 # target to generate assembly for a file
-src/orb_cv.cpp.s:
-	$(MAKE) -f CMakeFiles/orb_cv.dir/build.make CMakeFiles/orb_cv.dir/src/orb_cv.cpp.s
-.PHONY : src/orb_cv.cpp.s
+src/FASTDetector.cpp.s:
+	$(MAKE) -f CMakeFiles/orb_lite.dir/build.make CMakeFiles/orb_lite.dir/src/FASTDetector.cpp.s
+.PHONY : src/FASTDetector.cpp.s
+
+src/orb_self.o: src/orb_self.cpp.o
+
+.PHONY : src/orb_self.o
+
+# target to build an object file
+src/orb_self.cpp.o:
+	$(MAKE) -f CMakeFiles/orb_lite.dir/build.make CMakeFiles/orb_lite.dir/src/orb_self.cpp.o
+.PHONY : src/orb_self.cpp.o
+
+src/orb_self.i: src/orb_self.cpp.i
+
+.PHONY : src/orb_self.i
+
+# target to preprocess a source file
+src/orb_self.cpp.i:
+	$(MAKE) -f CMakeFiles/orb_lite.dir/build.make CMakeFiles/orb_lite.dir/src/orb_self.cpp.i
+.PHONY : src/orb_self.cpp.i
+
+src/orb_self.s: src/orb_self.cpp.s
+
+.PHONY : src/orb_self.s
+
+# target to generate assembly for a file
+src/orb_self.cpp.s:
+	$(MAKE) -f CMakeFiles/orb_lite.dir/build.make CMakeFiles/orb_lite.dir/src/orb_self.cpp.s
+.PHONY : src/orb_self.cpp.s
 
 # Help Target
 help:
@@ -158,10 +185,13 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... orb_cv"
-	@echo "... src/orb_cv.o"
-	@echo "... src/orb_cv.i"
-	@echo "... src/orb_cv.s"
+	@echo "... orb_lite"
+	@echo "... src/FASTDetector.o"
+	@echo "... src/FASTDetector.i"
+	@echo "... src/FASTDetector.s"
+	@echo "... src/orb_self.o"
+	@echo "... src/orb_self.i"
+	@echo "... src/orb_self.s"
 .PHONY : help
 
 

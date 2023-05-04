@@ -1,5 +1,10 @@
 #include "FASTDetector.h"
 
+FASTDetector::FASTDetector()
+{
+
+}
+
 FASTDetector::FASTDetector(int nfeatures, float fscaleFactor, int nlevels, int ninitThFAST, int nminThFAST)
 {
 
@@ -10,7 +15,7 @@ FASTDetector::~FASTDetector()
 
 }
 
-inline bool FASTDetector::preFASTCheck(const cv::Mat &img, int u, int v, double threshold)
+bool FASTDetector::preFASTCheck(const cv::Mat &img, int u, int v, double threshold)
 {
     uint8_t bigger = 0;
     uint8_t smaller = 0;

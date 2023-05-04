@@ -16,14 +16,12 @@ opencv2/opencv.hpp
 eigen3/Eigen/Core
 -
 
-/home/horizain/slam_lite/src/FASTDetector.cpp
-FASTDetector.h
-/home/horizain/slam_lite/src/FASTDetector.h
-
 /home/horizain/slam_lite/src/orb_self.cpp
 iostream
 -
 opencv2/core.hpp
+-
+opencv2/highgui/highgui.hpp
 -
 FASTDetector.h
 /home/horizain/slam_lite/src/FASTDetector.h
@@ -861,6 +859,10 @@ opencv2/videoio.hpp
 /opt/opencv3416/include/opencv2/opencv2/videoio.hpp
 opencv2/highgui/highgui_c.h
 /opt/opencv3416/include/opencv2/opencv2/highgui/highgui_c.h
+
+/opt/opencv3416/include/opencv2/highgui/highgui.hpp
+opencv2/highgui.hpp
+/opt/opencv3416/include/opencv2/highgui/opencv2/highgui.hpp
 
 /opt/opencv3416/include/opencv2/highgui/highgui_c.h
 opencv2/core/core_c.h

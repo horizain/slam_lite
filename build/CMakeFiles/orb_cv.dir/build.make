@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/horizain/SLAM-Lite
+CMAKE_SOURCE_DIR = /home/horizain/slam_lite
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/horizain/SLAM-Lite/build
+CMAKE_BINARY_DIR = /home/horizain/slam_lite/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/orb_cv.dir/depend.make
@@ -57,27 +57,42 @@ include CMakeFiles/orb_cv.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/orb_cv.dir/flags.make
 
-CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o: CMakeFiles/orb_cv.dir/flags.make
-CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o: ../src/orb_cv.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/horizain/SLAM-Lite/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o -c /home/horizain/SLAM-Lite/src/orb_cv.cpp
+CMakeFiles/orb_cv.dir/src/orb_self.cpp.o: CMakeFiles/orb_cv.dir/flags.make
+CMakeFiles/orb_cv.dir/src/orb_self.cpp.o: ../src/orb_self.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/horizain/slam_lite/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/orb_cv.dir/src/orb_self.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/orb_cv.dir/src/orb_self.cpp.o -c /home/horizain/slam_lite/src/orb_self.cpp
 
-CMakeFiles/orb_cv.dir/src/orb_cv.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/orb_cv.dir/src/orb_cv.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/horizain/SLAM-Lite/src/orb_cv.cpp > CMakeFiles/orb_cv.dir/src/orb_cv.cpp.i
+CMakeFiles/orb_cv.dir/src/orb_self.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/orb_cv.dir/src/orb_self.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/horizain/slam_lite/src/orb_self.cpp > CMakeFiles/orb_cv.dir/src/orb_self.cpp.i
 
-CMakeFiles/orb_cv.dir/src/orb_cv.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/orb_cv.dir/src/orb_cv.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/horizain/SLAM-Lite/src/orb_cv.cpp -o CMakeFiles/orb_cv.dir/src/orb_cv.cpp.s
+CMakeFiles/orb_cv.dir/src/orb_self.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/orb_cv.dir/src/orb_self.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/horizain/slam_lite/src/orb_self.cpp -o CMakeFiles/orb_cv.dir/src/orb_self.cpp.s
+
+CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o: CMakeFiles/orb_cv.dir/flags.make
+CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o: ../src/FASTDetector.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/horizain/slam_lite/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o -c /home/horizain/slam_lite/src/FASTDetector.cpp
+
+CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/horizain/slam_lite/src/FASTDetector.cpp > CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.i
+
+CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/horizain/slam_lite/src/FASTDetector.cpp -o CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.s
 
 # Object files for target orb_cv
 orb_cv_OBJECTS = \
-"CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o"
+"CMakeFiles/orb_cv.dir/src/orb_self.cpp.o" \
+"CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o"
 
 # External object files for target orb_cv
 orb_cv_EXTERNAL_OBJECTS =
 
-orb_cv: CMakeFiles/orb_cv.dir/src/orb_cv.cpp.o
+orb_cv: CMakeFiles/orb_cv.dir/src/orb_self.cpp.o
+orb_cv: CMakeFiles/orb_cv.dir/src/FASTDetector.cpp.o
 orb_cv: CMakeFiles/orb_cv.dir/build.make
 orb_cv: /opt/opencv3416/lib/libopencv_stitching.so.3.4.16
 orb_cv: /opt/opencv3416/lib/libopencv_superres.so.3.4.16
@@ -127,7 +142,7 @@ orb_cv: /opt/opencv3416/lib/libopencv_photo.so.3.4.16
 orb_cv: /opt/opencv3416/lib/libopencv_imgproc.so.3.4.16
 orb_cv: /opt/opencv3416/lib/libopencv_core.so.3.4.16
 orb_cv: CMakeFiles/orb_cv.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/horizain/SLAM-Lite/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable orb_cv"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/horizain/slam_lite/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable orb_cv"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/orb_cv.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -140,6 +155,6 @@ CMakeFiles/orb_cv.dir/clean:
 .PHONY : CMakeFiles/orb_cv.dir/clean
 
 CMakeFiles/orb_cv.dir/depend:
-	cd /home/horizain/SLAM-Lite/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/horizain/SLAM-Lite /home/horizain/SLAM-Lite /home/horizain/SLAM-Lite/build /home/horizain/SLAM-Lite/build /home/horizain/SLAM-Lite/build/CMakeFiles/orb_cv.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/horizain/slam_lite/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/horizain/slam_lite /home/horizain/slam_lite /home/horizain/slam_lite/build /home/horizain/slam_lite/build /home/horizain/slam_lite/build/CMakeFiles/orb_cv.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/orb_cv.dir/depend
 
