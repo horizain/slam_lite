@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(orb_lite)
 SET(CMAKE_BUILD_TYPE "Debug")
-
+set(CMAKE_EXPORT_COMPILECOMMANDS ON)
 find_package(OpenCV 3.4.16 REQUIRED
     PATHS /opt/opencv3416
 )
