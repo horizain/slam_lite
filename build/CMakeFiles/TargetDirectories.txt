@@ -1,3 +1,0 @@
-/home/horizain/slam/slam_lite/build/CMakeFiles/orb_lite.dir
-/home/horizain/slam/slam_lite/build/CMakeFiles/edit_cache.dir
-/home/horizain/slam/slam_lite/build/CMakeFiles/rebuild_cache.dir

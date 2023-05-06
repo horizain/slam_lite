@@ -1,25 +1,35 @@
 #ifndef __FAST_DETECTOR_H
 #define __FAST_DETECTOR_H
 #include "keyPoint.h"
+#include <opencv2/core/mat.hpp>
 
-class FASTDetector
-{
+class FASTDetector {
 private:
-    int _mnFeatures;
-    float _mfScaleFactor;
-    int _mnLevels;
-    int _mnInitThFAST;
-    int _mnMinThFAST;
+  int _mnFeatures;
+  float _mfScaleFactor;
+  int _mnLevels;
+  int _mnInitThFAST;
+  int _mnMinThFAST;
+  int _mnFAST9Mask[16 * 2] = {-3, 0,  -3, 1,  -2, 2,  -1, 3,  0,  3, 1,
+                         3,  2,  2,  3,  1,  3,  0,  3,  -1, 2, -2,
+                         1,  -3, 0,  -3, -1, -3, -2, -2, -3, -1};
+  enum _meLastFastState
+  {
+    SMALLER = -1,
+    INIT = 0,
+    BIGGER = 1
+  };
 
 public:
-    FASTDetector();
-    FASTDetector(int nfeatures, float fscaleFactor, int nlevels, int ninitThFAST, int nminThFAST);
-    ~FASTDetector();
+  FASTDetector();
+  FASTDetector(int nfeatures, float fscaleFactor, int nlevels, int ninitThFAST,
+               int nminThFAST);
+  ~FASTDetector();
 
-    void computePyramid();
+  void computePyramid();
 
-    bool preFASTCheck(const cv::Mat &img, int u, int v, double percent);
-    
+  bool preFASTCheck(const cv::Mat &img, int u, int v, double threshold);
+  bool FASTCheck(const cv::Mat &img, int u, int v, double threshold);
 };
 
 #endif
