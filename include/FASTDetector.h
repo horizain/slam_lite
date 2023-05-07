@@ -28,8 +28,10 @@ public:
 
   void computePyramid();
 
-  bool preFASTCheck(const cv::Mat &img, int u, int v, double threshold);
-  bool FASTCheck(const cv::Mat &img, int u, int v, double threshold);
+  bool detect(const cv::Mat &img, double threshold, std::vector<cv::KeyPoint> &vpkp);
+  bool preCheck(const cv::Mat &img, int u, int v, double threshold);
+  bool check9(const cv::Mat &img, int u, int v, double threshold);
+  void selectMax(const cv::Mat &img, int windows_size, std::vector<cv::KeyPoint> &vpkp);
 };
 
 #endif

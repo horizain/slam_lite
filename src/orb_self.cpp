@@ -17,27 +17,7 @@ int main(int argc, char *argv[])
     std::vector<KeyPoint> kps;
     assert(img.data != nullptr);
 
-    for (int v = 4; v < img.rows - 4; ++v)
-    {
-        for (int u = 4; u < img.cols - 4; ++u)
-        {
-            if (!FASTer.preFASTCheck(img, u, v, atof(argv[2])))
-            {
-                continue;
-            }
-            else
-            {
-                if (FASTer.FASTCheck(img, u, v, atof(argv[2])))
-                {
-                    KeyPoint kp;
-                    kp.pt.x = u;
-                    kp.pt.y = v;
-                    kps.push_back(kp);
-                }
-
-            }
-        }
-    }
+    FASTer.detect(img, atof(argv[2]), kps);
     // 画出可视化图像
     Mat outimg;
     drawKeypoints(img, kps, outimg, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
