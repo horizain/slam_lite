@@ -3,6 +3,8 @@
 #include "keyPoint.h"
 #include <opencv2/core/mat.hpp>
 
+
+
 class FASTDetector {
 private:
   int _mnFeatures;
@@ -32,6 +34,7 @@ public:
   bool preCheck(const cv::Mat &img, int u, int v, double threshold);
   bool check9(const cv::Mat &img, int u, int v, double threshold);
   void selectMax(const cv::Mat &img, int windows_size, std::vector<cv::KeyPoint> &vpkp);
+  std::vector<cv::KeyPoint> nonMaxSuppression(const cv::Mat &img, const std::vector<cv::KeyPoint>& pixels);
 };
 
 #endif

@@ -20,3 +20,11 @@ target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 )
 
+add_executable(test
+    src/test.cpp
+
+)
+target_link_libraries(test
+${OpenCV_LIBS}
+)
+

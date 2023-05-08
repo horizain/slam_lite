@@ -1,5 +1,13 @@
 #include "FASTDetector.h"
 #include <cstdint>
+namespace slam_lite
+{
+  // 定义一个函数，用于计算两个像素点之间的距离
+  double distance(int x1, int y1, int x2, int y2) {
+      return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+  }
+}
+
 
 FASTDetector::FASTDetector() {}
 
@@ -103,6 +111,7 @@ bool FASTDetector::detect(const cv::Mat &img, double threshold, std::vector<cv::
 void FASTDetector::selectMax(const cv::Mat &img, int windows_size, std::vector<cv::KeyPoint> &vpkp)
 {
   int u, v;
+  // std::vector<size_t> 
   for (auto kp : vpkp)
   {
     size_t nms = 0;
@@ -113,6 +122,25 @@ void FASTDetector::selectMax(const cv::Mat &img, int windows_size, std::vector<c
       uchar p = img.at<uchar>(v + _mnFAST9Mask[2 * i], u + _mnFAST9Mask[2 * i + 1]);
       nms += abs(img.at<uchar>(v, u) - p);
     }
-    
   }
+}
+
+// 定义一个函数，用于进行非极大值抑制
+std::vector<cv::KeyPoint> FASTDetector::nonMaxSuppression(const cv::Mat &img, const std::vector<cv::KeyPoint>& pixels) {
+    std::vector<cv::KeyPoint> result;
+    for (int i = 0; i < pixels.size(); i++) {
+        bool isMax = true;
+        for (int j = 0; j < pixels.size(); j++) {
+            if (i != j && slam_lite::distance(pixels[i].pt.x, pixels[i].pt.y, pixels[j].pt.x, pixels[j].pt.y) < 10) {
+                if (img.at<uchar>(pixels[i].pt.y, pixels[i].pt.x) < img.at<uchar>(pixels[j].pt.y, pixels[j].pt.x)) {
+                    isMax = false;
+                    break;
+                }
+            }
+        }
+        if (isMax) {
+            result.push_back(pixels[i]);
+        }
+    }
+    return result;
 }
