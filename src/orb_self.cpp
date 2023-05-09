@@ -32,13 +32,13 @@ int main(int argc, char *argv[])
     cout << "match nms cost = " << time_used.count() << " seconds. " << endl;
     // 画出可视化图像
     Mat outimg;
-    drawKeypoints(img, kps2, outimg, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+    drawKeypoints(img, kps, outimg, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
     imshow("quick fast features", outimg);
 
     // // 画出可视化图像
     Mat outimg2;
-    drawKeypoints(img, kps, outimg2, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
-    imshow("openCV nms features", outimg2);
+    drawKeypoints(img, kps2, outimg2, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+    imshow("fast nms features", outimg2);
 
     t1 = chrono::steady_clock::now();
     std::vector<KeyPoint> kp_1;

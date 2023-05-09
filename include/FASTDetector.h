@@ -30,11 +30,12 @@ public:
 
   void computePyramid();
 
-  bool detect(const cv::Mat &img, double threshold, std::vector<cv::KeyPoint> &vpkp);
+  bool detect(const cv::Mat &img, double threshold, std::vector<cv::KeyPoint> &kps);
   bool preCheck(const cv::Mat &img, int u, int v, double threshold);
   bool check9(const cv::Mat &img, int u, int v, double threshold);
-  void selectMax(const cv::Mat &img, int windows_size, std::vector<cv::KeyPoint> &vpkp);
+  void selectMax(const cv::Mat &img, int windows_size, std::vector<cv::KeyPoint> &kps);
   std::vector<cv::KeyPoint> nonMaxSuppression(const cv::Mat &img, const std::vector<cv::KeyPoint>& pixels);
+  void ORBdesc(const cv::Mat &img, std::vector<cv::KeyPoint> &kps, std::vector<uchar> &desc);
 };
 
 #endif

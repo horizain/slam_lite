@@ -9,6 +9,10 @@ using namespace cv;
 // 定义FAST角点检测器的阈值
 const int THRESHOLD = 20;
 
+// 定义BRIEF描述子的窗口大小和采样点数量
+const int PATCH_SIZE = 31;
+const int NUM_POINTS = 256;
+
 // 定义一个结构体，用于存储像素点的坐标和灰度值
 struct Pixel {
     int x;
@@ -19,6 +23,25 @@ struct Pixel {
 // 定义一个函数，用于计算两个像素点之间的距离
 double distance(int x1, int y1, int x2, int y2) {
     return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+}
+
+// 定义一个函数，用于计算BRIEF描述子
+vector<bool> computeBRIEF(const Mat& image, const Point2f& point) {
+    vector<bool> result;
+    Mat patch;
+    getRectSubPix(image, Size2f(PATCH_SIZE, PATCH_SIZE), point, patch);
+    for (int i = 0; i < NUM_POINTS; i++) {
+        int x1 = rand() % PATCH_SIZE;
+        int y1 = rand() % PATCH_SIZE;
+        int x2 = rand() % PATCH_SIZE;
+        int y2 = rand() % PATCH_SIZE;
+        if (patch.at<uchar>(y1, x1) < patch.at<uchar>(y2, x2)) {
+            result.push_back(true);
+        } else {
+            result.push_back(false);
+        }
+    }
+    return result;
 }
 
 // 定义一个函数，用于检测像素点是否为FAST角点
