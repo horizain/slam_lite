@@ -17,16 +17,7 @@ namespace slamlite
     public:
         Backend(/* args */);
         ~Backend();
-    };
-    
-    Backend::Backend(/* args */)
-    {
-    }
-    
-    Backend::~Backend()
-    {
-    }
-    
+    };    
 }
 
 #endif
