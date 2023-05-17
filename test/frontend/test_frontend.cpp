@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
     Frontend frontend;
     auto frame = Frame::CreateFrame();
     frame->_img = img;
+    frontend._initFASTThreshold = 50;
+    std::cout << frontend._initFASTThreshold << std::endl;
     frontend.AddFrame(frame);
     // 画出可视化图像
     Mat outimg;

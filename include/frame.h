@@ -26,7 +26,7 @@ struct Frame
     // Tcw 位姿
     SE3 _pose;
     // pose 数据锁
-    std::mutex _pose_mutex;
+    std::mutex _data_mutex;
     // 左右图像
     cv::Mat _img, _img_right;
 

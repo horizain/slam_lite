@@ -54,7 +54,7 @@ class Frontend
     // 用于计算描述子的随机采样点集合
     std::vector<cv::Point> _pattern;
     // 初始化的提取FAST响应值阈值
-    int _initFASTThreshold;
+    int _initFASTThreshold = 40;
     // 最小的提取FAST响应值阈值
     int _minFASTThreshold;
 

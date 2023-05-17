@@ -9,6 +9,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <list>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>

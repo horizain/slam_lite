@@ -34,4 +34,21 @@ bool Frontend::AddFrame(Frame::Ptr frame)
     return true;
 }
 
+bool Frontend::InsertKeyframe()
+{
+    if (_tracking_inliers >= _num_features_needed_for_keyframe)
+        return false;
+    _current_frame->SetKeyframe();
+    
+    // todo : map->insertKeyframe
+
+    // todo : Log(...)
+
+}
+
+void Frontend::SetObservationsForKeyframe()
+{
+    
+}
+
 } // namespace slamlite
