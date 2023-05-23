@@ -21,6 +21,7 @@ struct Feature
 
     bool _is_inlier = false;
     bool _is_on_right_img = false;
+    bool _is_good = false;
 
   public:
     Feature()

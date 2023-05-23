@@ -2,10 +2,10 @@
 #define __SLAM_LITE_FRONTEND_H
 
 #include "backend.h"
+#include "include/camera.h"
 #include "include/common_include.h"
 #include "include/frame.h"
 #include "include/map.h"
-#include "include/camera.h"
 #include <opencv2/features2d.hpp>
 
 namespace slamlite
@@ -43,7 +43,7 @@ class Frontend
 
     // 图像金字塔层与层之间的缩放因子
     double _scaleFactor;
-    
+
     // 参数
     int _num_features = 200;
     int _num_features_init = 100;
@@ -61,39 +61,42 @@ class Frontend
     // fast 特征点提取器
     cv::Ptr<cv::FastFeatureDetector> _fast_detector;
 
-    public:
+  public:
     Frontend();
 
     /**
      * @brief 外部接口，添加一个帧并计算其定位结果
-     * 
-     * @param frame 
-     * @return true 
-     * @return false 
+     *
+     * @param frame
+     * @return true
+     * @return false
      */
     bool AddFrame(Frame::Ptr frame);
 
     /**
      * @brief Get the Status object
-     * 
-     * @return FrontendStatus 
+     *
+     * @return FrontendStatus
      */
-    FrontendStatus GetStatus() const { return _status;}
+    FrontendStatus GetStatus() const
+    {
+        return _status;
+    }
 
-    private:
+  private:
     /**
      * @brief 跟踪普通帧
-     * 
-     * @return true 
-     * @return false 
+     *
+     * @return true
+     * @return false
      */
     bool Track();
 
     /**
      * @brief 重置前端系统
-     * 
-     * @return true 
-     * @return false 
+     *
+     * @return true
+     * @return false
      */
     bool Reset();
 
@@ -113,5 +116,12 @@ class Frontend
 
     void SetObservationsForKeyframe();
 };
+/**
+ * @brief linear triangulation with SVD
+ * 利用匹配点对和位姿可以三角化得到三维点
+ */
+inline bool triangulation(SE3 &pose, SE3 &pose_right, Vec3 &point, Vec3 &point_right, Vec3 &point_world);
+
+inline bool triangulation(const cv::KeyPoint &kp1, const cv::KeyPoint &kp2, const cv::Mat m1);
 } // namespace slamlite
 #endif

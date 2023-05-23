@@ -51,4 +51,21 @@ void Frontend::SetObservationsForKeyframe()
     
 }
 
+inline bool triangulation(SE3 &pose_reference, SE3 &pose_current, Vec3 &point_reference, Vec3 &point_current, Vec3 &point_world)
+{
+    Mat44 A;
+    Vec4 b;
+    b.setZero();
+    auto m = pose_reference.matrix3x4();
+    A.row(0) = point_reference * pose_reference.matrix3x4().row(2);
+
+    auto svd = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
+    point_world = (svd.matrixV().col(3) / svd.matrixV()(3, 3)).head<3>();
+
+    if (svd.singularValues()[3] / svd.singularValues()[2] < 1e-2)
+    {
+        return true;
+    }
+    return false;
+}
 } // namespace slamlite
