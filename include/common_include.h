@@ -10,6 +10,8 @@
 #include <thread>
 #include <vector>
 #include <list>
+// 第三方log日志库
+#include <spdlog/spdlog.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>

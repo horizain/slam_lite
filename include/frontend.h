@@ -18,6 +18,8 @@ enum class FrontendStatus
     TRACKING_BAD,
     LOST
 };
+// 32 bit unsigned int, will have 8, 8x32=256
+typedef std::vector<uint32_t> DescType;
 class Frontend
 {
   public:
@@ -100,6 +102,15 @@ class Frontend
      */
     bool Reset();
 
+    /**
+     * @brief linear triangulation with SVD
+     * 利用匹配点对和位姿可以三角化得到三维点
+     */
+    inline bool triangulation(SE3 &pose, SE3 &pose_right, Vec3 &point, Vec3 &point_right, Vec3 &point_world);
+
+    // 计算ORB BRIEF描述子
+    inline bool ComputeORB(const cv::Mat &img, std::vector<cv::KeyPoint> &keypoints, std::vector<DescType> &descriptors);
+    
     bool TrackLastFrame();
 
     int EstimateCurrentPose();
@@ -116,11 +127,6 @@ class Frontend
 
     void SetObservationsForKeyframe();
 };
-/**
- * @brief linear triangulation with SVD
- * 利用匹配点对和位姿可以三角化得到三维点
- */
-inline bool triangulation(SE3 &pose, SE3 &pose_right, Vec3 &point, Vec3 &point_right, Vec3 &point_world);
 
 inline bool triangulation(const cv::KeyPoint &kp1, const cv::KeyPoint &kp2, const cv::Mat m1);
 } // namespace slamlite
