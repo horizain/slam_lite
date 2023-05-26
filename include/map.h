@@ -1,9 +1,9 @@
 #ifndef __SLAM_LITE_MAP_H
 #define __SLAM_LITE_MAP_H
 
-#include "include/common_include.h"
-#include "include/frame.h"
-#include "include/mapPoint.h"
+#include "common_include.h"
+#include "frame.h"
+#include "mapPoint.h"
 #include <unordered_map>
 
 namespace slamlite

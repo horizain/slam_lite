@@ -1,7 +1,7 @@
 #ifndef __SLAM_LITE_MAP_POINT_H
 #define __SLAM_LITE_MAP_POINT_H
-#include "include/common_include.h"
-#include "include/feature.h"
+#include "common_include.h"
+#include "feature.h"
 
 namespace slamlite {
 // 前置引用

@@ -1,9 +1,9 @@
 #ifndef __SLAM_LITE_BACKEND_H
 #define __SLAM_LITE_BACKEND_H
 
-#include "include/common_include.h"
-#include "include/frame.h"
-#include "include/map.h"
+#include "common_include.h"
+#include "frame.h"
+#include "map.h"
 
 namespace slamlite
 {

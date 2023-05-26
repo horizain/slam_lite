@@ -1,8 +1,8 @@
 #ifndef __SLAM_LITE_FEATURE_H
 #define __SLAM_LITE_FEATURE_H
 
-#include "include/common_include.h"
-#include "include/mapPoint.h"
+#include "common_include.h"
+#include "mapPoint.h"
 #include <opencv2/features2d.hpp>
 
 namespace slamlite

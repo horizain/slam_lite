@@ -1,4 +1,4 @@
-#include "include/mapPoint.h"
+#include "mapPoint.h"
 
 namespace slamlite
 {

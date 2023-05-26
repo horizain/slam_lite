@@ -1,6 +1,6 @@
-#include "include/frontend.h"
-#include "include/config.h"
-#include "include/feature.h"
+#include "frontend.h"
+#include "config.h"
+#include "feature.h"
 
 namespace slamlite
 {
@@ -43,7 +43,7 @@ bool Frontend::InsertKeyframe()
     // todo : map->insertKeyframe
 
     // todo : Log(...)
-
+    return true;
 }
 
 void Frontend::SetObservationsForKeyframe()
@@ -340,7 +340,7 @@ static int _ORB_pattern[256 * 4] = {
  */
 bool Frontend::ComputeORB(const cv::Mat &img, std::vector<cv::KeyPoint> &keypoints, std::vector<DescType> &descriptors)
 {
-    float angle = (float)
+    ;
 }
 
 } // namespace slamlite

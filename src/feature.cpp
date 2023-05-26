@@ -1,4 +1,4 @@
-#include "include/feature.h"
+#include "feature.h"
 
 namespace slamlite
 {

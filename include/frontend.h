@@ -2,10 +2,10 @@
 #define __SLAM_LITE_FRONTEND_H
 
 #include "backend.h"
-#include "include/camera.h"
-#include "include/common_include.h"
-#include "include/frame.h"
-#include "include/map.h"
+#include "camera.h"
+#include "common_include.h"
+#include "frame.h"
+#include "map.h"
 #include <opencv2/features2d.hpp>
 
 namespace slamlite
@@ -18,8 +18,7 @@ enum class FrontendStatus
     TRACKING_BAD,
     LOST
 };
-// 32 bit unsigned int, will have 8, 8x32=256
-typedef std::vector<uint32_t> DescType;
+
 class Frontend
 {
   public:

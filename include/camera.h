@@ -1,7 +1,7 @@
 #ifndef __SLAM_LITE_CAMERA_H
 #define __SLAM_LITE_CAMERA_H
 
-#include "include/common_include.h"
+#include "common_include.h"
 
 namespace slamlite
 {
