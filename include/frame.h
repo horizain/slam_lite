@@ -3,6 +3,7 @@
 
 #include "common_include.h"
 #include "feature.h"
+#include "ORBextractor.h"
 
 namespace slamlite {
 
@@ -31,7 +32,7 @@ struct Frame
     cv::Mat _img, _img_right;
 
     std::vector<std::shared_ptr<Feature>> _feature;
-    std::vector<std::shared_ptr<Feature>> _feature_right;
+    // std::vector<std::shared_ptr<Feature>> _feature_right;
 
     public:
     Frame() {};

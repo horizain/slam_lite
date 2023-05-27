@@ -107,9 +107,6 @@ class Frontend
      */
     inline bool triangulation(SE3 &pose, SE3 &pose_right, Vec3 &point, Vec3 &point_right, Vec3 &point_world);
 
-    // 计算ORB BRIEF描述子
-    inline bool ComputeORB(const cv::Mat &img, std::vector<cv::KeyPoint> &keypoints, std::vector<DescType> &descriptors);
-    
     bool TrackLastFrame();
 
     int EstimateCurrentPose();

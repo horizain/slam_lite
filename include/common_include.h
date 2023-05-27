@@ -11,7 +11,12 @@
 #include <vector>
 #include <list>
 // 第三方log日志库
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #include <spdlog/spdlog.h>
+
+// std::shared_ptr<spdlog::logger> logger;
+
+#include "setting.h"
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -93,6 +98,7 @@ typedef Eigen::Matrix<float, Eigen::Dynamic, 1> VecXf;
 typedef Eigen::Matrix<float, 14, 1> Vec14f;
 
 // for Sophus
+#define SOPHUS_USE_BASIC_LOGGING
 #include <sophus/se3.hpp>
 #include <sophus/so3.hpp>
 
