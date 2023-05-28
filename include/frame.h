@@ -31,7 +31,13 @@ struct Frame
     // 左右图像
     cv::Mat _img, _img_right;
 
+    // 图像金字塔
+    std::vector<cv::Mat> _imagePyramid;
+
+    // 储存特征
     std::vector<std::shared_ptr<Feature>> _feature;
+    // 图像金字塔对应的特征
+    std::vector<std::vector<std::shared_ptr<Feature>>> _featurePyramid;
     // std::vector<std::shared_ptr<Feature>> _feature_right;
 
     public:

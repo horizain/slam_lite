@@ -12,11 +12,12 @@ int main(int argc, char *argv[])
     ORBextractor orb;
     orb._levels = 1;
     orb._imagePyramid.resize(orb._levels);
-    orb.ComputePyramid(img);
     std::vector<std::vector<cv::KeyPoint>> allkeypoints;
-    orb.ComputeKeyPoints(allkeypoints);
-    DescType i;
-    orb.ComputeDescriptor(img, allkeypoints.at(0).at(100), i);
+    allkeypoints.resize(1);
+    std::vector<std::vector<DescType>> alldescriptors;
+    orb(img, allkeypoints, alldescriptors);
+    DescType i = alldescriptors[0][100];
+    // orb.ComputeDescriptor(img, allkeypoints.at(0).at(100), i);
     for (auto j : i)
     {
         std::cout << j;

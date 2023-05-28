@@ -2,7 +2,7 @@
 
 namespace slamlite
 {
-ORBextractor::ORBextractor(int features, float scaleFactor, int levels, int initThresholdFAST, int minThresholdFAST)
+ORBextractor::ORBextractor(int features, double scaleFactor, int levels, int initThresholdFAST, int minThresholdFAST)
     : _num_features(features), _scaleFactor(scaleFactor), _levels(levels), _initFASTThreshold(initThresholdFAST),
       _minFASTThreshold(minThresholdFAST)
 {
@@ -364,13 +364,54 @@ static int _ORB_pattern[256 * 4] = {
  * @return true
  * @return false
  */
-bool ORBextractor::ComputeORB(const cv::Mat &img, std::vector<cv::KeyPoint> &keypoints,
+bool ORBextractor::ComputeORB(const cv::Mat &img, std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
                               std::vector<DescType> &descriptors)
 {
-    for (auto &kp : keypoints)
-    {
-    }
+
     return true;
+}
+
+void ORBextractor::operator()(cv::InputArray _image, std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
+                              std::vector<std::vector<DescType>> &alldescriptors)
+{
+    if (_image.empty())
+        return;
+
+    Mat image = _image.getMat();
+    assert(image.type() == CV_8UC1);
+
+    ComputePyramid(image);
+
+    // 需要对边缘进行筛选，否则计算描述子时会发生段错误
+    ComputeKeyPoints(allkeypoints);
+
+    alldescriptors.resize(allkeypoints.size());
+
+    for (int level = 0; level < _levels; ++level)
+    {
+        // 获取在allKeypoints中当前层特征点容器的句柄
+        std::vector<cv::KeyPoint> &keypoints = allkeypoints[level];
+        // 如果特征点数目为0，跳出本次循环，继续下一层金字塔
+        if ((int)keypoints.size() == 0)
+            continue;
+        // 对图像进行高斯模糊
+        cv::Mat workingMat = _imagePyramid[level].clone();
+        cv::GaussianBlur(workingMat, workingMat, cv::Size(7, 7), 2, 2, cv::BORDER_REFLECT_101);
+
+        std::vector<DescType> descriptors = alldescriptors[level];
+        for (int i = 0; i < keypoints.size(); ++i)
+        {
+            ComputeDescriptor(workingMat, keypoints[i], descriptors[i]);
+        }
+        // 对于0层以上的图像，进行坐标还原
+        if (level != 0)
+        {
+            double scale = _perLevelScaleFactor[level];
+            for (auto &kp : keypoints)
+                kp.pt *= scale;
+        }
+
+    }
 }
 
 int ORBextractor::ComputeDescriptorDistance(const DescType &a, const DescType &b)
@@ -386,15 +427,29 @@ int ORBextractor::ComputeDescriptorDistance(const DescType &a, const DescType &b
     return distance;
 }
 
+void ORBextractor::ComputeDescriptors(const cv::Mat &image, const std::vector<cv::KeyPoint> &keypoints,
+                                      std::vector<DescType> &descriptors)
+{
+    // 描述子容器清空内容
+    for (auto i : descriptors)
+        for (auto j : i)
+            j = 0;
+
+    for (int i = 0; i < keypoints.size(); ++i)
+    {
+        ComputeDescriptor(image, keypoints[i], descriptors[i]);
+    }
+}
+
 // 一度对应着多少弧度
-const static float factorPI = (float)(CV_PI / 180.f);
+const static double factorPI = (double)(CV_PI / 180.f);
 
 void ORBextractor::ComputeDescriptor(const cv::Mat &image, const cv::KeyPoint &keypoint, DescType &descriptor)
 {
     // keypoint.angle是角度制，范围是[0,360)度，转成弧度制
-    float angle = (float)keypoint.angle * factorPI;
+    double angle = (double)keypoint.angle * factorPI;
     // 计算这个角度的余弦值和正弦值
-    float c = (float)cos(angle), s = (float)sin(angle);
+    double c = (double)cos(angle), s = (double)sin(angle);
 
     // cvRound() 四舍五入函数
     const uchar *center = &image.at<uchar>(cvRound(keypoint.pt.y), cvRound(keypoint.pt.x));
@@ -429,8 +484,6 @@ void ORBextractor::ComputeDescriptor(const cv::Mat &image, const cv::KeyPoint &k
             else
             {
                 GET_VALUE(t0, i, offset);
-                int t = _ORB_pattern[i * 32 + offset + 0];
-                int t2 = _ORB_pattern[i * 32 + offset + 1];
                 GET_VALUE(t1, i, offset);
                 val |= (t0 < t1) << j;
             }

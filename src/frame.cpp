@@ -5,7 +5,9 @@ namespace slamlite
     Frame::Frame(long id,  double time_stamp,
     const SE3 &pose, const Mat &img, const Mat &img_right)
     : _id(id), _time_stamp(time_stamp), _pose(pose),
-    _img(img), _img_right(img_right) {}
+    _img(img), _img_right(img_right) {
+        
+    }
 
     Frame::Ptr Frame::CreateFrame()
     {
