@@ -1,1 +1,2 @@
-[2023-05-27 22:27:42.765] [unity] [info] test
+[2023-05-29 22:57:55.023] [unity] [info] test
+[2023-05-29 22:57:55.024] [unity] [debug] [test_spdlog.cpp:20] macro test

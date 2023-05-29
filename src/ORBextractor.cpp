@@ -1,32 +1,72 @@
 #include "ORBextractor.h"
+#include <cmath>
+#include <opencv2/core/base.hpp>
+#include <opencv2/core/fast_math.hpp>
+#include <opencv2/core/types.hpp>
 
-namespace slamlite
-{
-ORBextractor::ORBextractor(int features, double scaleFactor, int levels, int initThresholdFAST, int minThresholdFAST)
-    : _num_features(features), _scaleFactor(scaleFactor), _levels(levels), _initFASTThreshold(initThresholdFAST),
-      _minFASTThreshold(minThresholdFAST)
-{
+namespace slamlite {
+
+// 31 = 15 * 2 + 1(CENTER)
+const static int IC_PATCH_SIZE = 31;      // 灰度质心法的图像块直径
+const static int IC_HALF_PATCH_SIZE = 15; // 图像块半径
+// 19 = 15(IC_HALF_PATCH_SIZE) + 3(EDGE) + 1(CENTER)
+const static int IC_EDGE_THRESHOLD = 19; // 综合考虑边界元素的图像边
+const static int FAST_EDGE_THRESHOLD = 3; // 计算角点的图像边界
+
+ORBextractor::ORBextractor(int features, double scaleFactor, int levels,
+                           int initFASTThreshold, int minFASTThreshold)
+    : _numFeatures(features), _scaleFactor(scaleFactor), _levels(levels),
+      _initFASTThreshold(initFASTThreshold),
+      _minFASTThreshold(minFASTThreshold) {
+  // 根据金字塔层数进行初始化
+  _perScaleFactor.reserve(_levels);
+  _perScale2.reserve(_levels);
+  _perInvScaleFactor.reserve(_levels);
+  _perInvScale2.reserve(_levels);
+
+  // 对初始图像（第0层），这些参数都是1
+  _perScaleFactor[0] = 1.0f;
+  _perScale2[0] = 1.0f;
+  _perInvScaleFactor[0] = _perScaleFactor[0];
+  _perInvScale2[0] = _perScale2[0];
+
+  // sigma^2就是每层图像相对于初始图像缩放因子的平方
+  for (int i = i; i < _levels; ++i) {
+    _perScaleFactor[i] = _perScaleFactor[i - 1] * _scaleFactor;
+    _perScale2[i] = _perScale2[i] = _perScale2[i];
+    _perInvScaleFactor[i] = 1.0f / _perScaleFactor[i];
+    _perInvScale2[i] = 1.0f / _perScale2[i];
+  }
+
+  _perImagePyramid.resize(_levels);
+  _perNumFeatures.resize(_levels);
+
+  // 初始化灰度质心法算法所需变量
+  // +1中的1表示那个圆的中间行
+  _icPatchUMaxs.resize(IC_HALF_PATCH_SIZE + 1);
+  // 45时的v的坐标
+  int vmax = cvFloor(IC_HALF_PATCH_SIZE * sqrt(2.f) / 2.f + 1);
+  // 先计算1/4个圆
+  const double halfPatch2 = IC_HALF_PATCH_SIZE * IC_HALF_PATCH_SIZE;
+
+  for (int v = 0; v <= vmax; ++v) {
+    // v 从0开始增加，意味着_icPatchUMaxs[0]为Umax
+    _icPatchUMaxs[v] = cvRound(sqrt(halfPatch2 - v * v));
+  }
+  // 反过来对称着计算剩下1/4个圆
+  int vmin = cvCeil(IC_HALF_PATCH_SIZE * sqrt(2.f) / 2.f);
+  // 这段代码来自ORB SLAM，算法原理是什么还没搞清楚 -- 20230529
+  for (int v = IC_HALF_PATCH_SIZE, v0 = 0; v >= vmin; --v) {
+    while (_icPatchUMaxs[v0] == _icPatchUMaxs[v0 + 1])
+      ++v0;
+    _icPatchUMaxs[v] = v0;
+    ++v0;
+  }
 }
 
-ORBextractor::ORBextractor()
-{
-}
+ORBextractor::ORBextractor() {}
 
-ORBextractor::~ORBextractor()
-{
-}
-
-// int ORBextractor::DetectFeatures() {
-//   std::vector<cv::KeyPoint> keypoints;
-//   cv::FAST(_current_frame->_img, keypoints, _initFASTThreshold, true);
-//   int cnt_detected = 0;
-//   for (auto &kp : keypoints) {
-//     _current_frame->_feature.push_back(
-//         Feature::Ptr(new Feature(_current_frame, kp)));
-//     ++cnt_detected;
-//   }
-//   return cnt_detected;
-// }
+ORBextractor::~ORBextractor() {}
 
 /**
  * @brief
@@ -35,64 +75,95 @@ ORBextractor::~ORBextractor()
  * @return true
  * @return false
  */
-bool ORBextractor::ComputePyramid(cv::Mat &image)
-{
-    for (int level = 0; level < _levels; ++level)
-    {
-        if (level != 0)
-        {
-            _imagePyramid[level] = image;
-        }
-        else
-        {
-            _imagePyramid[level] = image;
-        }
+bool ORBextractor::ComputePyramid(cv::Mat &image) {
+  for (int level = 0; level < _levels; ++level) {
+    if (level != 0) {
+      _perImagePyramid[level] = image;
+    } else {
+      _perImagePyramid[level] = image;
     }
-    return true;
+  }
+  return true;
 }
 
-bool ORBextractor::ComputeKeyPoints(std::vector<std::vector<cv::KeyPoint>> &allkeypoints)
-{
-    allkeypoints.resize(_levels);
-    for (int level = 0; level < _levels; ++level)
-    {
-        FAST(_imagePyramid[level], allkeypoints.at(level), _initFASTThreshold, true);
-        //         for (auto kp : allkeypoints.at(level))
-        //         {
-        //             if (auto current_frame = _frame.lock())
-        //             {
-        //                 current_frame->_feature.push_back(Feature::Ptr(new Feature(current_frame, kp)));
-        //             }
-        //             else
-        //             {
-        // #ifdef LOG_OUT
-        //                 logger->debug("frame point get error!");
-        // #endif
-        //             }
-        //         }
-    }
-    return true;
+bool ORBextractor::ComputeKeyPoints(
+    std::vector<std::vector<cv::KeyPoint>> &allkeypoints) {
+  allkeypoints.resize(_levels);
+  for (int level = 0; level < _levels; ++level) {
+    const int minBorderX = IC_EDGE_THRESHOLD - FAST_EDGE_THRESHOLD;
+    const int maxBorderX =
+        _perImagePyramid[level].cols - IC_EDGE_THRESHOLD + FAST_EDGE_THRESHOLD;
+    const int minBorderY = minBorderX;
+    const int maxBorderY =
+        _perImagePyramid[level].rows - IC_EDGE_THRESHOLD + FAST_EDGE_THRESHOLD;
+    // FAST(_perImagePyramid[level].rowRange(minBorderY,
+    // maxBorderY).colRange(minBorderX, maxBorderX), allkeypoints.at(level),
+    // _initFASTThreshold,
+    //      true);
+    cv::Mat roi = _perImagePyramid[level](cv::Range(minBorderY, maxBorderY),
+                                          cv::Range(minBorderX, maxBorderX));
+    FAST(roi, allkeypoints.at(level), _initFASTThreshold, true);
+    ComputeOrientation(_perImagePyramid[level], allkeypoints[level]);
+  }
+  return true;
 }
 
-inline bool ORBextractor::Triangulation(SE3 &pose_reference, SE3 &pose_current, Vec3 &point_reference,
-                                        Vec3 &point_current, Vec3 &point_world)
-{
-    Mat44 A;
-    Vec4 b;
-    b.setZero();
-    auto m = pose_reference.matrix3x4();
-    A.row(0) = point_reference[1] * pose_reference.matrix3x4().row(2) - pose_reference.matrix3x4().row(1);
-    A.row(1) = point_reference[0] * pose_reference.matrix3x4().row(2) - pose_reference.matrix3x4().row(0);
-    A.row(2) = point_current[1] * pose_current.matrix3x4().row(2) - pose_current.matrix3x4().row(1);
-    A.row(3) = point_current[0] * pose_current.matrix3x4().row(2) - pose_current.matrix3x4().row(0);
-    auto svd = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
-    point_world = (svd.matrixV().col(3) / svd.matrixV()(3, 3)).head<3>();
-
-    if (svd.singularValues()[3] / svd.singularValues()[2] < 1e-2)
-    {
-        return true;
+double ORBextractor::ComputeAngle(const cv::Mat &image, const cv::Point2f &pt) {
+  // 图像的矩，前者按照图像块的y轴加权，后者按照x轴加权
+  int m01 = 0, m10 = 0;
+  const uchar *center = &image.at<uchar>(cvRound(pt.y), cvRound(pt.x));
+  // 先计算v=center.y 即中心线的情况
+  for (int u = -IC_HALF_PATCH_SIZE; u <= IC_HALF_PATCH_SIZE; ++u) {
+    m10 += u * center[u];
+  }
+  // 获取整个图像一行有多少个元素，用于访问圆形区域内的下一行
+  int step = (int)image.step1();
+  for (int v = 1; v <= IC_HALF_PATCH_SIZE; ++v) {
+    int v_sum = 0;
+    int d = _icPatchUMaxs[v];
+    // 对于每一个u，一次处理两个点
+    for (int u = -d; u <= d; ++u) {
+      // 中心线上面元素的灰度值
+      int v_ip = center[u + v * step];
+      // 中心线下面元素的灰度值
+      int v_bottom = center[u - v * step];
+      v_sum += (v_ip - v_bottom);
+      m10 += u * (v_ip + v_bottom);
     }
-    return false;
+    m01 += v * v_sum;
+  }
+  return cv::fastAtan2((float)m01, (float)m10);
+}
+
+void ORBextractor::ComputeOrientation(const cv::Mat &image,
+                                      std::vector<cv::KeyPoint> &keypoints) {
+  for (auto &kp : keypoints)
+    kp.angle = ComputeAngle(image, kp.pt);
+}
+
+inline bool ORBextractor::Triangulation(SE3 &pose_reference, SE3 &pose_current,
+                                        Vec3 &point_reference,
+                                        Vec3 &point_current,
+                                        Vec3 &point_world) {
+  Mat44 A;
+  Vec4 b;
+  b.setZero();
+  auto m = pose_reference.matrix3x4();
+  A.row(0) = point_reference[1] * pose_reference.matrix3x4().row(2) -
+             pose_reference.matrix3x4().row(1);
+  A.row(1) = point_reference[0] * pose_reference.matrix3x4().row(2) -
+             pose_reference.matrix3x4().row(0);
+  A.row(2) = point_current[1] * pose_current.matrix3x4().row(2) -
+             pose_current.matrix3x4().row(1);
+  A.row(3) = point_current[0] * pose_current.matrix3x4().row(2) -
+             pose_current.matrix3x4().row(0);
+  auto svd = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
+  point_world = (svd.matrixV().col(3) / svd.matrixV()(3, 3)).head<3>();
+
+  if (svd.singularValues()[3] / svd.singularValues()[2] < 1e-2) {
+    return true;
+  }
+  return false;
 }
 
 // ORB pattern
@@ -364,133 +435,128 @@ static int _ORB_pattern[256 * 4] = {
  * @return true
  * @return false
  */
-bool ORBextractor::ComputeORB(const cv::Mat &img, std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
-                              std::vector<DescType> &descriptors)
-{
+bool ORBextractor::ComputeORB(
+    const cv::Mat &img, std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
+    std::vector<DescType> &descriptors) {
 
-    return true;
+  return true;
 }
 
-void ORBextractor::operator()(cv::InputArray _image, std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
-                              std::vector<std::vector<DescType>> &alldescriptors)
-{
-    if (_image.empty())
-        return;
+void ORBextractor::operator()(
+    cv::InputArray _image, std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
+    std::vector<std::vector<DescType>> &alldescriptors) {
+  if (_image.empty())
+    return;
 
-    Mat image = _image.getMat();
-    assert(image.type() == CV_8UC1);
+  cv::Mat image = _image.getMat();
+  assert(image.type() == CV_8UC1);
 
-    ComputePyramid(image);
+  ComputePyramid(image);
 
-    // 需要对边缘进行筛选，否则计算描述子时会发生段错误
-    ComputeKeyPoints(allkeypoints);
+  // 需要对边缘进行筛选，否则计算描述子时会发生段错误
+  ComputeKeyPoints(allkeypoints);
 
-    alldescriptors.resize(allkeypoints.size());
+  alldescriptors.resize(allkeypoints.size());
 
-    for (int level = 0; level < _levels; ++level)
-    {
-        // 获取在allKeypoints中当前层特征点容器的句柄
-        std::vector<cv::KeyPoint> &keypoints = allkeypoints[level];
-        // 如果特征点数目为0，跳出本次循环，继续下一层金字塔
-        if ((int)keypoints.size() == 0)
-            continue;
-        // 对图像进行高斯模糊
-        cv::Mat workingMat = _imagePyramid[level].clone();
-        cv::GaussianBlur(workingMat, workingMat, cv::Size(7, 7), 2, 2, cv::BORDER_REFLECT_101);
+  for (int level = 0; level < _levels; ++level) {
+    // 获取在allKeypoints中当前层特征点容器的句柄
+    std::vector<cv::KeyPoint> &keypoints = allkeypoints[level];
+    // 如果特征点数目为0，跳出本次循环，继续下一层金字塔
+    if ((int)keypoints.size() == 0)
+      continue;
+    // 对图像进行高斯模糊
+    cv::Mat workingMat = _perImagePyramid[level].clone();
+    cv::GaussianBlur(workingMat, workingMat, cv::Size(7, 7), 2, 2,
+                     cv::BORDER_REFLECT_101);
 
-        std::vector<DescType> descriptors = alldescriptors[level];
-        for (int i = 0; i < keypoints.size(); ++i)
-        {
-            ComputeDescriptor(workingMat, keypoints[i], descriptors[i]);
-        }
-        // 对于0层以上的图像，进行坐标还原
-        if (level != 0)
-        {
-            double scale = _perLevelScaleFactor[level];
-            for (auto &kp : keypoints)
-                kp.pt *= scale;
-        }
-
+    std::vector<DescType> descriptors = alldescriptors[level];
+    for (int i = 0; i < keypoints.size(); ++i) {
+      ComputeDescriptor(workingMat, keypoints[i], descriptors[i]);
     }
+    // 对于0层以上的图像，进行坐标还原
+    if (level != 0) {
+      double scale = _perScaleFactor[level];
+      for (auto &kp : keypoints)
+        kp.pt *= scale;
+    }
+  }
 }
 
-int ORBextractor::ComputeDescriptorDistance(const DescType &a, const DescType &b)
-{
-    int distance = 0;
-    for (int i = 0; i < 8; i++)
-    {
-        uint32_t v = a[i] ^ b[i];
-        v = v - ((v >> 1) & 0x55555555);
-        v = (v & 0x33333333) + ((v >> 2) & 0x33333333);
-        distance += (((v + (v >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
-    }
-    return distance;
+int ORBextractor::ComputeDescriptorDistance(const DescType &a,
+                                            const DescType &b) {
+  int distance = 0;
+  for (int i = 0; i < 8; i++) {
+    uint32_t v = a[i] ^ b[i];
+    v = v - ((v >> 1) & 0x55555555);
+    v = (v & 0x33333333) + ((v >> 2) & 0x33333333);
+    distance += (((v + (v >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
+  }
+  return distance;
 }
 
-void ORBextractor::ComputeDescriptors(const cv::Mat &image, const std::vector<cv::KeyPoint> &keypoints,
-                                      std::vector<DescType> &descriptors)
-{
-    // 描述子容器清空内容
-    for (auto i : descriptors)
-        for (auto j : i)
-            j = 0;
+void ORBextractor::ComputeDescriptors(
+    const cv::Mat &image, const std::vector<cv::KeyPoint> &keypoints,
+    std::vector<DescType> &descriptors) {
+  // 描述子容器清空内容
+  for (auto i : descriptors)
+    for (auto j : i)
+      j = 0;
 
-    for (int i = 0; i < keypoints.size(); ++i)
-    {
-        ComputeDescriptor(image, keypoints[i], descriptors[i]);
-    }
+  for (int i = 0; i < keypoints.size(); ++i) {
+    ComputeDescriptor(image, keypoints[i], descriptors[i]);
+  }
 }
 
 // 一度对应着多少弧度
 const static double factorPI = (double)(CV_PI / 180.f);
 
-void ORBextractor::ComputeDescriptor(const cv::Mat &image, const cv::KeyPoint &keypoint, DescType &descriptor)
-{
-    // keypoint.angle是角度制，范围是[0,360)度，转成弧度制
-    double angle = (double)keypoint.angle * factorPI;
-    // 计算这个角度的余弦值和正弦值
-    double c = (double)cos(angle), s = (double)sin(angle);
+void ORBextractor::ComputeDescriptor(const cv::Mat &image,
+                                     const cv::KeyPoint &keypoint,
+                                     DescType &descriptor) {
+  // keypoint.angle是角度制，范围是[0,360)度，转成弧度制
+  double angle = (double)keypoint.angle * factorPI;
+  // 计算这个角度的余弦值和正弦值
+  double c = (double)cos(angle), s = (double)sin(angle);
 
-    // cvRound() 四舍五入函数
-    const uchar *center = &image.at<uchar>(cvRound(keypoint.pt.y), cvRound(keypoint.pt.x));
-    const int step = (int)image.step;
+  // cvRound() 四舍五入函数
+  const uchar *center =
+      &image.at<uchar>(cvRound(keypoint.pt.y), cvRound(keypoint.pt.x));
+  const int step = (int)image.step;
 
 // x'= xcos(θ) - ysin(θ),  y'= xsin(θ) + ycos(θ)
 // y' * step + x'
 // idx + 0  : x 坐标
 // idx + 1  : y 坐标
-#define GET_VALUE(t, idx, offset)                                                                                      \
-    {                                                                                                                  \
-        t = center[cvRound(_ORB_pattern[idx * 32 + offset + 0] * s + _ORB_pattern[idx * 32 + offset + 1] * c) * step + \
-                   cvRound(_ORB_pattern[idx * 32 + offset + 0] * c - _ORB_pattern[idx * 32 + offset + 1] * s)];        \
-        offset += 2;                                                                                                   \
+#define GET_VALUE(t, idx, offset)                                              \
+  {                                                                            \
+    t = center[cvRound(_ORB_pattern[idx * 32 + offset + 0] * s +               \
+                       _ORB_pattern[idx * 32 + offset + 1] * c) *              \
+                   step +                                                      \
+               cvRound(_ORB_pattern[idx * 32 + offset + 0] * c -               \
+                       _ORB_pattern[idx * 32 + offset + 1] * s)];              \
+    offset += 2;                                                               \
+  }
+  DescType temp_descriptor(8, 0);
+  for (int i = 0; i < 8; ++i) {
+    int offset = 0;
+    // t0 参与比较的第1个特征点的灰度值
+    // t1 参与比较的第2个特征点的灰度值
+    // val 描述子这个字节的比较结果，0或1
+    int t0, t1, val;
+    for (int j = 0; j < 32; ++j) {
+      if (j == 0) {
+        GET_VALUE(t0, i, offset);
+        GET_VALUE(t1, i, offset);
+        val = t0 < t1;
+      } else {
+        GET_VALUE(t0, i, offset);
+        GET_VALUE(t1, i, offset);
+        val |= (t0 < t1) << j;
+      }
     }
-    DescType temp_descriptor(8, 0);
-    for (int i = 0; i < 8; ++i)
-    {
-        int offset = 0;
-        // t0 参与比较的第1个特征点的灰度值
-        // t1 参与比较的第2个特征点的灰度值
-        // val 描述子这个字节的比较结果，0或1
-        int t0, t1, val;
-        for (int j = 0; j < 32; ++j)
-        {
-            if (j == 0)
-            {
-                GET_VALUE(t0, i, offset);
-                GET_VALUE(t1, i, offset);
-                val = t0 < t1;
-            }
-            else
-            {
-                GET_VALUE(t0, i, offset);
-                GET_VALUE(t1, i, offset);
-                val |= (t0 < t1) << j;
-            }
-        }
-        temp_descriptor.at(i) = (uint32_t)val;
-    }
-    descriptor = temp_descriptor;
+    temp_descriptor.at(i) = (uint32_t)val;
+  }
+  descriptor = temp_descriptor;
 #undef GET_VALUE
 }
 

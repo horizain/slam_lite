@@ -13,8 +13,9 @@
 // 第三方log日志库
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #include <spdlog/spdlog.h>
-
-// std::shared_ptr<spdlog::logger> logger;
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+extern std::shared_ptr<spdlog::logger> logger;
 
 #include "setting.h"
 
@@ -107,6 +108,5 @@ typedef Sophus::SO3d SO3;
 
 // for cv
 #include <opencv2/core/core.hpp>
-using cv::Mat;
 
 #endif

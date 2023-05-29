@@ -7,6 +7,11 @@
         {
             "name": "SLAM_LITE(debug)",
             "type": "cppdbg",
+            "setupCommands": [{        // 鼠标悬挂查看变量值，使用pretty print配置
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }],
             "request": "launch",
             "program": "${workspaceFolder}/build/orb_lite",
             "args": ["${workspaceFolder}/build/1.jpg", "0.2"],
@@ -21,7 +26,12 @@
             "name": "ORBextractor",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/test/ORBextractor/build/test_ORBextractor",
+            "setupCommands": [{        // 鼠标悬挂查看变量值，使用pretty print配置
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+        }],
+            "program": "${workspaceFolder}/test/ORBextractor/build/test_orbextractor",
             "args": ["/home/horizain/slam/slam_lite/build/1.jpg"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

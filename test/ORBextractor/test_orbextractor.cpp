@@ -1,26 +1,29 @@
 #include "ORBextractor.h"
 #include "common_include.h"
+#include <memory>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 using namespace slamlite;
 using namespace cv;
 
+
+
 int main(int argc, char *argv[])
 {
     Mat img = imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
-    ORBextractor orb;
+    ORBextractor orb(100, 1.25, 1, 40, 20);
     orb._levels = 1;
-    orb._imagePyramid.resize(orb._levels);
     std::vector<std::vector<cv::KeyPoint>> allkeypoints;
-    allkeypoints.resize(1);
     std::vector<std::vector<DescType>> alldescriptors;
     orb(img, allkeypoints, alldescriptors);
-    DescType i = alldescriptors[0][100];
-    // orb.ComputeDescriptor(img, allkeypoints.at(0).at(100), i);
-    for (auto j : i)
+    // DescType i = alldescriptors[0][100];
+    for (auto i : alldescriptors[0])
     {
-        std::cout << j;
+        for (auto j : i)
+        {
+            std::cout << j;
+        }
     }
     std::cout << std::endl;
     Mat outimg;

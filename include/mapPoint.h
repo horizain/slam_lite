@@ -1,5 +1,6 @@
 #ifndef __SLAM_LITE_MAP_POINT_H
 #define __SLAM_LITE_MAP_POINT_H
+
 #include "common_include.h"
 #include "feature.h"
 

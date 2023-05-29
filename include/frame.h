@@ -43,7 +43,7 @@ struct Frame
     public:
     Frame() {};
 
-    Frame(long id,  double time_stamp, const SE3 &pose, const Mat &img, const Mat &right);
+    Frame(long id,  double time_stamp, const SE3 &pose, const cv::Mat &img, const cv::Mat &right);
 
     SE3 GetPose();
 

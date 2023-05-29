@@ -115,15 +115,9 @@ class Frontend
 
     bool SteroInit();
 
-    int DetectFeatures();
-
-    int FindFeaturesInRight();
-
     int TriangulateNewPoints();
 
     void SetObservationsForKeyframe();
 };
-
-inline bool triangulation(const cv::KeyPoint &kp1, const cv::KeyPoint &kp2, const cv::Mat m1);
 } // namespace slamlite
 #endif

@@ -3,6 +3,6 @@
 
 // 设置日志输出级别
 // #define LOG_OUT
-
+#define STERO
 
 #endif
