@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "SLAM_LITE(debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/orb_lite",
+            "args": ["${workspaceFolder}/build/1.jpg", "0.2"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+        },
+        {
+            "name": "ORBextractor",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/test/ORBextractor/build/test_ORBextractor",
+            "args": ["/home/horizain/slam/slam_lite/build/1.jpg"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+        }
+
+    ]
+}
