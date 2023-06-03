@@ -14,7 +14,7 @@
             }],
             "request": "launch",
             "program": "${workspaceFolder}/build/orb_lite",
-            "args": ["${workspaceFolder}/build/1.jpg", "0.2"],
+            "args": ["${workspaceFolder}/build/2.jpg", "0.2"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
@@ -32,7 +32,7 @@
             "ignoreFailures": true
         }],
             "program": "${workspaceFolder}/test/ORBextractor/build/test_orbextractor",
-            "args": ["/home/horizain/slam/slam_lite/build/1.jpg"],
+            "args": ["/home/horizain/slam/slam_lite/build/2.jpg"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

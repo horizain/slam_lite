@@ -4,17 +4,20 @@
 #include "common_include.h"
 #include "feature.h"
 #include "frame.h"
+#include "setting.h"
+#include <memory>
 #include <opencv2/core/types.hpp>
 #include <opencv2/features2d.hpp>
 #include <opencv2/opencv.hpp>
 
 namespace slamlite {
-// 32 bit unsigned int, will have 8, 8x32=256
-typedef std::vector<uint32_t> DescType;
+
+
 
 class ORBextractor {
 public:
   enum { FAST_SCORE = 1 };
+  typedef std::shared_ptr<ORBextractor> Ptr;
 
   // 图像金字塔层与层之间的缩放因子
   double _scaleFactor;
@@ -61,8 +64,7 @@ public:
   int DetectFeatures();
 
   void operator()(cv::InputArray _image,
-                  std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
-                  std::vector<std::vector<DescType>> &alldescriptors);
+                  Feature features);
 
   /**
    * @brief 未完成
@@ -71,7 +73,7 @@ public:
    * @return true
    * @return false
    */
-  bool ComputePyramid(cv::Mat &image);
+  bool ComputePyramid(const cv::Mat &image);
 
   /**
    * @brief 仅实现提取角点功能，没有分布均衡处理
@@ -81,19 +83,6 @@ public:
    * @return false
    */
   bool ComputeKeyPoints(std::vector<std::vector<cv::KeyPoint>> &allkeypoints);
-
-  /**
-   * @brief
-   *
-   * @param img
-   * @param keypoints
-   * @param descriptors
-   * @return true
-   * @return false
-   */
-  bool ComputeORB(const cv::Mat &img,
-                  std::vector<std::vector<cv::KeyPoint>> &allkeypoints,
-                  std::vector<DescType> &descriptors);
 
   void ComputeDescriptor(const cv::Mat &image, const cv::KeyPoint &keypoint,
                          DescType &descriptor);
@@ -113,8 +102,7 @@ public:
 
   inline int ComputeDescriptorDistance(const DescType &a, const DescType &b);
 
-  inline bool Triangulation(SE3 &pose, SE3 &pose_right, Vec3 &point,
-                            Vec3 &point_right, Vec3 &point_world);
+
 };
 } // namespace slamlite
 

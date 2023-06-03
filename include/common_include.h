@@ -15,7 +15,7 @@
 #include <spdlog/spdlog.h>
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-extern std::shared_ptr<spdlog::logger> logger;
+// extern std::shared_ptr<spdlog::logger> logger;
 
 #include "setting.h"
 
