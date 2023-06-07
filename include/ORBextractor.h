@@ -12,8 +12,6 @@
 
 namespace slamlite {
 
-
-
 class ORBextractor {
 public:
   enum { FAST_SCORE = 1 };
@@ -63,8 +61,7 @@ public:
 
   int DetectFeatures();
 
-  void operator()(cv::InputArray _image,
-                  Feature features);
+  void operator()(cv::InputArray _image, Feature features);
 
   /**
    * @brief 未完成
@@ -101,8 +98,6 @@ public:
                           std::vector<cv::KeyPoint> &keypoints);
 
   inline int ComputeDescriptorDistance(const DescType &a, const DescType &b);
-
-
 };
 } // namespace slamlite
 

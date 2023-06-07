@@ -1,4 +1,5 @@
 #include "ORBextractor.h"
+
 #include <cmath>
 #include <opencv2/core.hpp>
 #include <opencv2/core/base.hpp>
@@ -20,6 +21,7 @@ ORBextractor::ORBextractor(int features, double scaleFactor, int levels,
     : _numFeatures(features), _scaleFactor(scaleFactor), _levels(levels),
       _initFASTThreshold(initFASTThreshold),
       _minFASTThreshold(minFASTThreshold) {
+  /******************* 图像金字塔 *********************/
   // 根据金字塔层数进行初始化
   _perScaleFactor.reserve(_levels);
   _perScale2.reserve(_levels);
@@ -29,8 +31,8 @@ ORBextractor::ORBextractor(int features, double scaleFactor, int levels,
   // 对初始图像（第0层），这些参数都是1
   _perScaleFactor[0] = 1.0f;
   _perScale2[0] = 1.0f;
-  _perInvScaleFactor[0] = _perScaleFactor[0];
-  _perInvScale2[0] = _perScale2[0];
+  _perInvScaleFactor[0] = 1.0f;
+  _perInvScale2[0] = 1.0f;
 
   // sigma^2就是每层图像相对于初始图像缩放因子的平方
   for (int i = 1; i < _levels; ++i) {
@@ -42,7 +44,27 @@ ORBextractor::ORBextractor(int features, double scaleFactor, int levels,
 
   _perImagePyramid.resize(_levels);
   _perNumFeatures.resize(_levels);
+  /********************* 每层特征点 *********************/
+  // 图像降采样缩放系数的倒数
+  double factor = 1.0f / _scaleFactor;
+  // 第0层图像应该分配的特征点数量
+  double levelZeroFeatures = _numFeatures * (1 - factor) /
+                             (1 - (double)pow((factor), (double)_levels));
+  // 待分配特征点总数
+  int sumFeatures = 0;
+  // 逐层计算待分配特征点个数
+  for (int level; level < _levels - 1; ++level) {
+    // 返回最近整数值
+    _perNumFeatures[level] = cvRound(levelZeroFeatures);
+    // 累计总数
+    sumFeatures += _perNumFeatures[level];
+    // 计算下一层
+    levelZeroFeatures *= factor;
+  }
+  // 把分配剩下的特征点个数分配到顶层
+  _perNumFeatures[level - 1] = std::max(_numFeatures - suimFeatures, 0);
 
+  /******************** 计算特征点方向 ***********************/
   // 初始化灰度质心法算法所需变量
   // +1中的1表示那个圆的中间行
   _icPatchUMaxs.resize(IC_HALF_PATCH_SIZE + 1);
@@ -114,6 +136,9 @@ bool ORBextractor::ComputeKeyPoints(
     cv::Mat roi = _perImagePyramid[level](cv::Range(minBorderY, maxBorderY),
                                           cv::Range(minBorderX, maxBorderX));
     FAST(roi, allkeypoints.at(level), _initFASTThreshold, true);
+    for (auto kp : allkeypoints.at(level)) {
+      kp.octave = level;
+    }
     ComputeOrientation(_perImagePyramid[level], allkeypoints[level]);
   }
   return true;
@@ -412,8 +437,7 @@ static int _ORB_pattern[256 * 4] = {
     -1,  -6,  0,   -11 /*mean (0.127148), correlation (0.547401)*/
 };
 
-void ORBextractor::operator()(
-    cv::InputArray _image, Feature features) {
+void ORBextractor::operator()(cv::InputArray _image, Feature features) {
   if (_image.empty())
     return;
 
@@ -427,6 +451,12 @@ void ORBextractor::operator()(
 
   // 需要对边缘进行筛选，否则计算描述子时会发生段错误
   ComputeKeyPoints(allkeypoints);
+
+  // 统计所有层图像金字塔的特征点总数
+  int num_keypoints = 0;
+  for (int level = 0; level < _levels; ++level) {
+    num_keypoints += (int)allkeypoints[level].size();
+  }
 
   alldescriptors.resize(allkeypoints.size());
 

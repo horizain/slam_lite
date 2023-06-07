@@ -10,91 +10,109 @@
 #include <cstdint>
 #include <opencv2/core/hal/interface.h>
 
-namespace slamlite {
+namespace slamlite
+{
 
-struct Frame {
-public:
-  // eigen 内存对齐
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
-  // 重命名Frame指针
-  typedef std::shared_ptr<Frame> Ptr;
+      struct Frame
+      {
+      public:
+            // eigen 内存对齐
+            EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+            // 重命名Frame指针
+            typedef std::shared_ptr<Frame> Ptr;
 
-  static uint64_t _nextID;
-  static uint64_t _nextKeyPointID;
+            static uint64_t _nextID;
+            static uint64_t _nextKeyPointID;
 
-  // 帧id
-  uint64_t _id = 0;
-  // 对应的关键帧id
-  uint64_t _keyframe_id = 0;
-  // 是否为关键帧
-  bool _is_keyframe = false;
-  // 时间戳
-  double _time_stamp;
+            // 帧id
+            uint64_t _id = 0;
+            // 对应的关键帧id
+            uint64_t _keyframeID = 0;
+            // 是否为关键帧
+            bool _isKeyframe = false;
+            // 时间戳
+            double _timeStamp;
 
-  double _thresholdDepth = 0;
+            double _thresholdDepth = 0;
 
-  std::vector<MapPoint> _maps;
+            std::vector<MapPoint> _maps;
 
-  cv::Mat _image;
-  Camera::Ptr _camera;
-  Feature _features;
-  ORBextractor::Ptr _ORBextractor;
-#ifdef STEREO
-  cv::Mat _image_right;
-  Camera::Ptr _camera_rightt;
-  Feature _features_right;
-  ORBextractor::Ptr _ORBextractor_right;
+            cv::Mat _image;
+            Camera::Ptr _camera;
+            Feature _features;
+            ORBextractor::Ptr _ORBextractor;
 
-#endif
-  // Tcw 位姿
-  SE3 _pose;
-  Mat33 _Rcw;
-  Mat33 _Rwc;
+            bool _isStrero = false;
+            cv::Mat _image_right;
+            Camera::Ptr _camera_rightt;
+            Feature _features_right;
+            ORBextractor::Ptr _ORBextractor_right;
 
-  // pose 数据锁
-  std::mutex _data_mutex;
-  // 左右图像
+            // Tcw 位姿
+            SE3 _pose;
+            Mat33 _Rcw;
+            Mat33 _Rwc;
 
-  // 图像金字塔
-  // std::vector<cv::Mat> _imagePyramid;
+            // pose 数据锁
+            std::mutex _data_mutex;
+            // 左右图像
 
-  // 储存特征
-  // std::vector<Feature> _feature;
-  // 图像金字塔对应的特征
-  std::vector<std::vector<Feature>> _allFeatures;
-  std::vector<int> _allFeaturesNum;
-  // std::vector<std::shared_ptr<Feature>> _feature_right;
+            // 图像金字塔
+            // std::vector<cv::Mat> _imagePyramid;
 
-public:
-  Frame(){};
+            // 储存特征
+            // std::vector<Feature> _feature;
+            // 图像金字塔对应的特征
+            std::vector<std::vector<Feature>> _allFeatures;
+            std::vector<int> _allFeaturesNum;
+            // std::vector<std::shared_ptr<Feature>> _feature_right;
 
-  Frame(long id, double time_stamp, const SE3 &pose, const cv::Mat &img,
-        const cv::Mat &right);
+      public:
+            Frame(){};
 
-#ifdef STEREO
-  Frame(const cv::Mat &image, const cv::Mat &image_right,
-        const double &timeStamp, ORBextractor::Ptr orbextractor,
-        ORBextractor::Ptr orbextractor_right, Camera::Ptr camera,
-        Camera::Ptr camera_right, const double &thresholdDepth);
+            Frame(long id, double time_stamp, const SE3 &pose, const cv::Mat &img,
+                  const cv::Mat &right);
 
-  void ComputeStereoMatches();
-#endif
-  Frame(const cv::Mat &image, const double &timeStamp,
-        ORBextractor::Ptr orbextractor, Camera::Ptr camera,
-        const double &thresholdDepth);
-  // Frame(const cv::Mat &img, const SE3 &pose, )
+            // 双目Frame构造函数
+            /**
+             * @brief 双目相机Frame构造函数
+             *
+             * @param image 左目图像
+             * @param image_right 右目图像
+             * @param timeStamp 时间戳
+             * @param orbextractor 左目特征提取器句柄
+             * @param orbextractor_right 右目特征提取器句柄
+             * @param camera 左目相机参数
+             * @param camera_right 右目相机参数
+             * @param thresholdDepth 远近点区分深度阈值
+             */
+            Frame(const cv::Mat &image, const cv::Mat &image_right,
+                  const double &timeStamp, ORBextractor::Ptr orbextractor,
+                  ORBextractor::Ptr orbextractor_right, Camera::Ptr camera,
+                  Camera::Ptr camera_right, const double &thresholdDepth);
 
-  SE3 GetPose();
+            /**
+             * @brief 两帧图像稀疏立体匹配
+             *
+             */
+            void ComputeStereoMatches();
 
-  void SetPose(const SE3 &pose);
+            Frame(const cv::Mat &image, const double &timeStamp,
+                  ORBextractor::Ptr orbextractor, Camera::Ptr camera,
+                  const double &thresholdDepth);
+            // Frame(const cv::Mat &img, const SE3 &pose, )
 
-  void ComputeORB(const cv::Mat &image);
+            SE3 GetPose();
 
-  void SetKeyframe();
+            void SetPose(const SE3 &pose);
 
-  // 工厂构建模式，分配id
-  static std::shared_ptr<Frame> CreateFrame();
-};
+            void ComputeORB(const cv::Mat &image);
+
+            void SetKeyframe();
+
+            // 工厂构建模式，分配id
+            static std::shared_ptr<Frame> CreateFrame();
+      };
 } // namespace slamlite
 
 #endif

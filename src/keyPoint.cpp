@@ -1,51 +1,59 @@
 #include "keyPoint.h"
 
-keyPoint::keyPoint(int u, int v, int id, int num)
+keyPoint::keyPoint (int u, int v, int id, int num)
 {
-    _mnU = u;
-    _mnV = v;
-    _mnID = id;
-    _mnNum = num;
+  _mnU = u;
+  _mnV = v;
+  _mnID = id;
+  _mnNum = num;
 }
 
-void keyPoint::setU(int u)
+void
+keyPoint::setU (int u)
 {
-    _mnU = u;
+  _mnU = u;
 }
 
-void keyPoint::setV(int v)
+void
+keyPoint::setV (int v)
 {
-    _mnV = v;
+  _mnV = v;
 }
 
-void keyPoint::setID(int id)
+void
+keyPoint::setID (int id)
 {
-    _mnID = id;
+  _mnID = id;
 }
 
-void keyPoint::setNum(int num)
+void
+keyPoint::setNum (int num)
 {
-    _mnNum = num;
+  _mnNum = num;
 }
 
-void keyPoint::setAngle(double angle)
+void
+keyPoint::setAngle (double angle)
 {
-    _mdAngle = angle;
+  _mdAngle = angle;
 }
 
-int keyPoint::getID()
+int
+keyPoint::getID ()
 {
-    return _mnID;
+  return _mnID;
 }
 
-int keyPoint::getNum()
+int
+keyPoint::getNum ()
 {
-    return _mnNum;
+  return _mnNum;
 }
 
-Eigen::Vector2d keyPoint::getPointCoordi()
+Eigen::Vector2d
+keyPoint::getPointCoordi ()
 {
-    Eigen::Vector2d point;
-    point << _mnU, _mnV;
-    return point;
+  Eigen::Vector2d point;
+  point << _mnU, _mnV;
+  return point;
 }

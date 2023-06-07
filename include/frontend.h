@@ -34,26 +34,6 @@ public:
   // 跟踪到的内点数量
   int _tracking_inliers = 0;
 
-  // 图像金字塔层与层之间的缩放因子
-  double _scaleFactor;
-
-  // 参数
-  int _num_features = 200;
-  int _num_features_init = 100;
-  int _num_features_tracking = 50;
-  int _num_features_tracking_bad = 20;
-  int _num_features_needed_for_keyframe = 80;
-
-  // 用于计算描述子的随机采样点集合
-  std::vector<cv::Point> _pattern;
-  // 初始化的提取FAST响应值阈值
-  int _initFASTThreshold = 40;
-  // 最小的提取FAST响应值阈值
-  int _minFASTThreshold;
-
-  // fast 特征点提取器
-  cv::Ptr<cv::FastFeatureDetector> _fast_detector;
-
 public:
   Frontend();
 
@@ -104,7 +84,8 @@ private:
 
   bool InsertKeyframe();
 
-  int FeatureMatch(Frame &frame_reference, Frame &frame_current, std::vector<int> matchFeatureIndexs, int windowsSize);
+  int FeatureMatch(Frame &frame_reference, Frame &frame_current,
+                   std::vector<int> matchFeatureIndexs, int windowsSize);
 
   bool SteroInit();
 
